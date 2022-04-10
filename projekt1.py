@@ -1,5 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 22 13:18:00 2022
+
+@author: zmigr
+"""
+
 import math as m
 import numpy as np
+
 
 class Transformacje:
     
@@ -33,9 +41,7 @@ class Transformacje:
         e2  : [float] : mimośrod elipsoidy [niemianowana]
         Returns
         -------
-        fi  : [float] : szerokość geodezyjna [rad]
-        lam : [float] : długość geodezyjna [rad]
-        h   : [float] : wysokość elipsoidalna [m]
+        flh  : [list] : fi, lam i h
 
         """
         r = np.sqrt(X**2+Y**2)
@@ -52,7 +58,10 @@ class Transformacje:
         lam = np.arctan(Y/X)
         N = self.a/np.sqrt(1-self.ecc*np.sin(fi)**2)
         h = r/np.cos(fi)-N
-        return fi, lam, h 
+        
+        flh = [fi, lam, h]
+        
+        return flh
     
     def blh_2_XYZ(fi, lam, h, self):
         """
