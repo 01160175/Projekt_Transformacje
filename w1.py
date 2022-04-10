@@ -26,6 +26,7 @@ X = t[:,0]
 Y = t[:,1]
 Z = t[:,2]
 
-Transformacje.xyz_2_blh(X, Y, Z, self)
+
+print(geo.xyz_2_blh(X, Y, Z))
 
 np.savetxt("wsp_out.txt", t, delimiter=',', fmt = ['%10.2f', '%10.2f', '%10.3f'], header = 'Konwersja współrzędnych geodezyjnych \\ Jakub Żmigrodzki')
