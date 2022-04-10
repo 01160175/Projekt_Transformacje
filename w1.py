@@ -20,6 +20,8 @@ xy92 = np.zeros((rows,2))
 neu = np.zeros((rows,cols))
 az_elev_dis = np.zeros(())
 
+
+
 X = t[:,0]
 Y = t[:,1]
 Z = t[:,2]
