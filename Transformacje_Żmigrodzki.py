@@ -362,7 +362,7 @@ class Transformacje:
         xP  [float] : współrzędna X punktu poczatkowego [m]
         yP  [float] : współrzędna Y punktu poczatkowego [m]
         xK  [float] : współrzędna X punktu końcowego [m]
-        yK  [float] : współrzędna X punktu pkońcowego [m]
+        yK  [float] : współrzędna Y punktu końcowego [m]
        
         Wyniki
         -------
@@ -384,8 +384,8 @@ class Transformacje:
         
         Parametry
         -------
-        X1  [list] : współrzędna X i Y punktu poczatkowego w układzie 92/00 [m]
-        X2  [list] : współrzędna X i Y punktu poczatkowego w układzie 92/00 [m]
+        X1  [list] : współrzędna X i Y punktu początkowego w układzie 92/00 [m]
+        X2  [list] : współrzędna X i Y punktu końcowego w układzie 92/00 [m]
         s   [float] : odległość pomierzona [m]
         a   [float] : dłuższa półoś elipsoidy [m]
         e2  [float] : mimośród elipsoidy
