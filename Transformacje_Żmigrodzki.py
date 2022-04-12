@@ -60,9 +60,7 @@ class Transformacje:
         N = self.a/np.sqrt(1-self.ecc*np.sin(fi)**2)
         h = r/np.cos(fi)-N
         
-        flh = [fi, lam, h]
-        
-        return flh
+        return fi, lam, h
     
     def filh_2_XYZ(fi, lam, h, self):
         """
