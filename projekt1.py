@@ -27,19 +27,20 @@ class Transformacje:
         self.flattening = (self.a-self.b)/ self.a
         self.ecc = 2*self.flattening - self.flattening**2
 
-    def xyz_2_blh(X, Y, Z, self):
+    def xyz_2_filh(X, Y, Z, self):
         """
         Funkcja przelicza współrzędne geocentryczne (ECEF) 
-        na współrzędne geodezyjne (Algorytm Hirvonena).
+        na współrzędne geodezyjne (Hirvonen).
 
-        Parameters
+        Parametry
         ----------
-        X   : [float] : współrzędna geocentryczna (ECEF) [m]
-        Y   : [float] : współrzędna geocentryczna (ECEF) [m]
-        Z   : [float] : współrzędna geocentryczna (ECEF) [m]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
-        Returns
+        X   [float] : współrzędna geocentryczna (ECEF) [m]
+        Y   [float] : współrzędna geocentryczna (ECEF) [m]
+        Z   [float] : współrzędna geocentryczna (ECEF) [m]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośrod elipsoidy
+        
+        Wyniki
         -------
         flh  : [list] : fi, lam i h
 
@@ -63,23 +64,24 @@ class Transformacje:
         
         return flh
     
-    def blh_2_XYZ(fi, lam, h, self):
+    def filh_2_XYZ(fi, lam, h, self):
         """
         Funkcja przelicza współrzędne geodezyjne  
         na współrzędne geocentryczne (ECEF).
 
-        Parameters
+        Parametry
         ----------
         fi  : [float] : szerokość geodezyjna [rad]
-        lam : [float] : długość geodezyjna [rad]
-        h   : [float] : wysokość elipsoidalna [m]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
-        Returns
+        lam [float] : długość geodezyjna [rad]
+        h   [float] : wysokość elipsoidalna [m]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
+        
+        Wyniki
         -------
-        X   : [float] : współrzędna geocentryczna (ECEF) [m]
-        Y   : [float] : współrzędna geocentryczna (ECEF) [m]
-        Z   : [float] : współrzędna geocentryczna (ECEF) [m]
+        X   [float] : współrzędna geocentryczna (ECEF) [m]
+        Y   [float] : współrzędna geocentryczna (ECEF) [m]
+        Z   [float] : współrzędna geocentryczna (ECEF) [m]
     
         """
         N = self.a/m.sqrt(1-self.ecc*m.sin(fi)**2)
@@ -88,27 +90,26 @@ class Transformacje:
         Z = (N*(1-self.ecc) + h) * m.sin(fi)
         return X, Y, Z
     
-    def blh_2_neu(fl1, fl2, self):
+    def filh_2_neu(fl1, fl2, self):
         """   
-        Funkcja przelicza współrzędne Gaussa - Krugera  
-        na współrzędne geodezyjne.
+        Funkcja przelicza współrzędne geodezyjne na współrzędne topocentryczne.
         
-        Parameters
+        Parametry
         -------
-        fl1 : [list]  : wpółrzedne geodezyjne punktu początkowego [rad]
-        fl2 : [list]  : wpółrzedne geodezyjne punktu końcowego [rad]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        fl1 [list]  : wpółrzedne geodezyjne punktu początkowego [rad]
+        fl2 [list]  : wpółrzedne geodezyjne punktu końcowego [rad]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
           
-        Returns
+        Wyniki
         -------
-        N : [float] : wpółrzedna topocentryczna N (north) [m]
-        E : [float] : wpółrzedna topocentryczna E (east) [m]
-        U : [float] : wpółrzedna topocentryczna U (up) [m]
+        N [float] : wpółrzedna topocentryczna N (north) [m]
+        E [float] : wpółrzedna topocentryczna E (east) [m]
+        U [float] : wpółrzedna topocentryczna U (up) [m]
         
         """  
-        X1, Y1, Z1 = self.blh_2_XYZ(fl1[0], fl1[1], fl1[2], self.a, self.ecc)
-        X2, Y2, Z2 = self.blh_2_XYZ(fl2[0], fl2[1], fl2[2], self.a, self.ecc)
+        X1, Y1, Z1 = self.filh_2_XYZ(fl1[0], fl1[1], fl1[2], self.a, self.ecc)
+        X2, Y2, Z2 = self.filh_2_XYZ(fl2[0], fl2[1], fl2[2], self.a, self.ecc)
         
         dx = [X2 - X1, Y2 - Y1, Z2 - Z1]  
         R = np.array([[-np.sin(fl1[0]) * np.cos(fl1[1]), -np.sin(fl1[1]), np.cos(fl1[0]) * np.cos(fl1[1])],
@@ -123,20 +124,19 @@ class Transformacje:
     
     def ukl2000(fi, lam, self):
         """   
-        Funkcja przelicza współrzędne geodezyjne  
-        na współrzędne układu 2000.
+        Funkcja przelicza współrzędne geodezyjne na współrzędne układu 2000.
         
-        Parameters
+        Parametry
         -------
-        fi  :  float] : szerokość geodezyjna [rad]
-        lam : [float] : długość geodezyjna [rad]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        fi  [float] : szerokość geodezyjna [rad]
+        lam [float] : długość geodezyjna [rad]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
         
-        Returns
+        Wyniki
         -------
-        x00 : [float] : współrzędna w układzie 2000 [m]
-        y00 : [float] : współrzędna w układzie 2000 [m]
+        x00 [float] : współrzędna w układzie 2000 [m]
+        y00 [float] : współrzędna w układzie 2000 [m]
         
         """
         m = 0.999923
@@ -183,20 +183,19 @@ class Transformacje:
 
     def ukl1992(fi, lam, self):
         """   
-        Funkcja przelicza współrzędne geodezyjne  
-        na współrzędne układu 1992.
+        Funkcja przelicza współrzędne geodezyjne na współrzędne układu 1992.
         
-        Parameters
+        Parametry
         -------
-        fi  : [float] : szerokość geodezyjna [rad]
-        lam : [float] : długość geodezyjna [rad]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        fi  [float] : szerokość geodezyjna [rad]
+        lam [float] : długość geodezyjna [rad]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
         
-        Returns
+        Wyniki
         -------
-        x92 : [float] : współrzędna w układzie 1992 [m]
-        y92 : [float] : współrzędna w układzie 1992 [m]  
+        x92 [float] : współrzędna w układzie 1992 [m]
+        y92 [float] : współrzędna w układzie 1992 [m]  
         
         """ 
         m = 0.9993
@@ -223,20 +222,20 @@ class Transformacje:
     
     def u92u00_2_GK(X, Y):
         """   
-        Funkcja przelicza współrzędne układu 1992 lub układu 1992  
-        na współrzędne Gaussa - Krugera.
+        Funkcja przelicza współrzędne układu 1992 lub układu 2000 na współrzędne
+        Gaussa - Krugera.
         
-        Parameters
+        Parametry
         -------
-        X    : [float] : współrzędna w układzie 1992/2000 [m]
-        Y    : [float] : współrzędna w układzie 1992/2000 [m]
+        X    [float] : współrzędna w układzie 92/00 [m]
+        Y    [float] : współrzędna w układzie 92/00 [m]
           
-        Returns
+        Wyniki
         -------
-        xGK  : [float] : współrzędna w układzie Gaussa - Krugera 
-        yGK  : [float] : współrzędna w układzie Gaussa - Krugera 
-        lam0 : [float] : południk osiowy [rad] 
-        m    : [float] : elemntarna skala długości [niemianowana]
+        xGK  [float] : współrzędna w układzie Gaussa - Krugera 
+        yGK  [float] : współrzędna w układzie Gaussa - Krugera 
+        lam0 [float] : południk osiowy [rad] 
+        m    [float] : elementarna skala długości
         
         """     
         if X < 1000000 and Y < 1000000:
@@ -265,24 +264,23 @@ class Transformacje:
             ma = m00
         return(xGK, yGK, lam0, ma)
     
-    def GK_2_blh(xGK, yGK, m, lam0, self):    
+    def GK_2_filh(xGK, yGK, m, lam0, self):    
         """   
-        Funkcja przelicza współrzędne Gaussa - Krugera  
-        na współrzędne geodezyjne.
+        Funkcja przelicza współrzędne Gaussa - Krugera na współrzędne geodezyjne.
         
-        Parameters
+        Parametry
         -------
-        xGK  : [float] : współrzędna w układzie Gaussa - Krugera 
-        yGK  : [float] : współrzędna w układzie Gaussa - Krugera 
-        lam0 : [float] : południk osiowy [rad] 
-        m    : [float] : elemntarna skala długości [niemianowana]
-        a    : [float] : dłuższa półoś elipsoidy [m]
-        e2   : [float] : mimośrod elipsoidy [niemianowana]
+        xGK  [float] : współrzędna w układzie Gaussa - Krugera 
+        yGK  [float] : współrzędna w układzie Gaussa - Krugera 
+        lam0 [float] : południk osiowy [rad] 
+        m    [float] : elementarna skala długości
+        a    [float] : dłuższa półoś elipsoidy [m]
+        e2   [float] : mimośród elipsoidy
           
-        Returns
+        Wyniki
         -------
-        fi   : [float] : szerokość geodezyjna [rad]
-        lam  : [float] : długość geodezyjna [rad]
+        fi   [float] : szerokość geodezyjna [rad]
+        lam  [float] : długość geodezyjna [rad]
         
         """  
         A0 = 1 - (self.ecc/4) - (3*(self.ecc**2))/64 - (5*(self.ecc**3))/256
@@ -310,44 +308,45 @@ class Transformacje:
         
         return(fi, lam)
     
-    def u92u00_2_blh(X, Y, self):
+    def u92u00_2_filh(X, Y, self):
         """   
-        Funkcja przelicza współrzędne układu 1992 lub układu 1992  
-        na współrzędne Gaussa - Krugera.
+        Funkcja przelicza współrzędne układu 1992 lub układu 2000 na
+        współrzędne geodezyjne uprzednio przekształcając je na współrzędne 
+        Gaussa - Krugera.
         
-        Parameters
+        Parametry
         -------
-        X   : [float] : współrzędna w układzie 1992/2000 [m]
-        Y   : [float] : współrzędna w układzie 1992/2000 [m]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        X   [float] : współrzędna w układzie 92/00 [m]
+        Y   [float] : współrzędna w układzie 92/00 [m]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
         
-        Returns
+        Wyniki
         -------
-        fi  : [float] : szerokość geodezyjna [rad]
-        lam : [float] : długość geodezyjna [rad]
+        fi  [float] : szerokość geodezyjna [rad]
+        lam [float] : długość geodezyjna [rad]
         
         """     
         xGK, yGK, lam0, m = self.u92u00_2_GK(X, Y)
-        fi, lam = self.GK_2_blh(xGK, yGK, m, lam0, self.ecc, self.a)
+        fi, lam = self.GK_2_filh(xGK, yGK, m, lam0, self.ecc, self.a)
         
         return(fi, lam)
         
-    def azel(N, E, U):
+    def Azel(N, E, U):
         """   
-        Funkcja wyznacza kąt azymutu i kąt elewacji 
-        na podstawie współrzędnych topocentrycznych
+        Funkcja wyznacza azymut i kąt elewacji na podstawie współrzędnych
+        topocentrycznych.
         
-        Parameters
+        Parametry
         -------
-        N  : [float] : wpółrzedna topocentryczna N (north) [m]
-        E  : [float] : wpółrzedna topocentryczna E (east) [m]
-        U  : [float] : wpółrzedna topocentryczna U (up) [m] 
+        N  [float] : wpółrzedna topocentryczna N (north) [m]
+        E  [float] : wpółrzedna topocentryczna E (east) [m]
+        U  [float] : wpółrzedna topocentryczna U (up) [m] 
        
-        Returns
+        Wyniki
         -------
-        Az : [float] : azymut [rad]
-        el : [float] : kąt elewacji [rad]
+        Az [float] : azymut [rad]
+        el [float] : kąt elewacji [rad]
         
         """  
         Az = m.atan2(E, N)
@@ -357,17 +356,17 @@ class Transformacje:
         
     def d2D(xP, yP, xK, yK):
         """   
-        Funkcja wyznacza odległość na płaszczyźnie
-        na podstawie współrzędnych płaskich prostokątnych
+        Funkcja wyznacza odległość na płaszczyźnie na podstawie współrzędnych
+        płaskich prostokątnych.
         
-        Parameters
+        Parametry
         -------
-        xP  : [float] : współrzędna X punktu poczatkowego [m]
-        yP  : [float] : współrzędna Y punktu poczatkowego [m]
-        xK  : [float] : współrzędna X punktu końcowego [m]
-        yK  : [float] : współrzędna X punktu pkońcowego [m]
+        xP  [float] : współrzędna X punktu poczatkowego [m]
+        yP  [float] : współrzędna Y punktu poczatkowego [m]
+        xK  [float] : współrzędna X punktu końcowego [m]
+        yK  [float] : współrzędna X punktu pkońcowego [m]
        
-        Returns
+        Wyniki
         -------
         d : [float] : odległość na płaszczyźnie [m]
         
@@ -381,28 +380,28 @@ class Transformacje:
     
     def sel_sUK_red(X1, X2, s, self):
         """   
-        Funkcja wyznacza redukcje orazodległość na elipsoidzie,
-        w układzie Gaussa - Krugera i współrzędnych płaskich prostokątnych (1992/2000)
-        na podstawie współrzędnych dwóch punktów w układzie 1992/2000 i odległości pomierzonej
+        Funkcja wyznacza redukcje oraz odległość na elipsoidzie, w układzie
+        Gaussa - Krugera i współrzędnych płaskich prostokątnych (92/00) na
+        podstawie współrzędnych dwóch punktów w układzie 92/00 i odległości pomierzonej.
         
-        Parameters
+        Parametry
         -------
-        X1  :  [list] : współrzędna X i Y punktu poczatkowego w układzie 1992/2000 [m]
-        X2  :  [list] : współrzędna X i Y punktu poczatkowego w układzie 1992/2000 [m]
-        s   : [float] : odległość pomierzona [m]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        X1  [list] : współrzędna X i Y punktu poczatkowego w układzie 92/00 [m]
+        X2  [list] : współrzędna X i Y punktu poczatkowego w układzie 92/00 [m]
+        s   [float] : odległość pomierzona [m]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
        
-        Returns
+        Wyniki
         -------
-        sel : [float] : odległosc na elipsoidzie [m]
-        sGK : [float] : odległosc w układzie Gausssa - Krugera [m]
-        sUK : [float] : odległosc w układzie 1992/2000 [m]
-        r   : [float] : redukcja [m]
+        sel [float] : odległość na elipsoidzie [m]
+        sGK [float] : odległość w układzie Gausssa - Krugera [m]
+        sUK [float] : odległość w układzie 92/00 [m]
+        r   [float] : redukcja [m]
         
         """     
-        fip, lamp = self.u92u00_2_blh(X1[0], X1[1], self.ecc, self.a)
-        fik, lamk = self.u92u00_2_blh(X2[0], X2[1], self.ecc, self.a)
+        fip, lamp = self.u92u00_2_filh(X1[0], X1[1], self.ecc, self.a)
+        fik, lamk = self.u92u00_2_filh(X2[0], X2[1], self.ecc, self.a)
         
         xGKp, yGKp, lam0p, m = self.u92u00_2_GK(X1[0], X1[1])
         xGKk, yGKk, lam0k, m = self.u92u00_2_GK(X2[0], X2[1])
@@ -412,31 +411,31 @@ class Transformacje:
         R, N, M = self.R_M_N(self.a, self.ecc, fim)
         
         dH = X2[2] - X1[2]
-        sc = m.sqrt((s**2 - dH**2)/((1 + X1[2]/R) * (1 + X2[2]/R))) #dlugosc cieciwy
-        sel = 2 * R * m.asin(sc/(2 * R))                            #odległoc na elipsoidzie
-        sGK = sel * (1 + (yGKp**2 + yGKp * yGKk + yGKk**2)/(6 * R**2)) #odleglosc w GK
-        r = sGK - sel                                                  #redukcja
-        sUK = sGK * m                                                  #odleglosc w ukladzie 1992/2000
+        sc = m.sqrt((s**2 - dH**2)/((1 + X1[2]/R) * (1 + X2[2]/R)))
+        sel = 2 * R * m.asin(sc/(2 * R))
+        sGK = sel * (1 + (yGKp**2 + yGKp * yGKk + yGKk**2)/(6 * R**2))
+        r = sGK - sel
+        sUK = sGK * m
         
         return(sel, sGK, sUK, r)
     
     def sel_az_vincent(fl1, fl2, self):
         """   
-        Funkcja przelicza współrzędne Gaussa - Krugera  
-        na współrzędne geodezyjne.
+        Funkcja oblicza odległość na elipsoidzie, azymut i azymut odwrotny
+        za pomocą algorytmu Vincenta.
         
-        Parameters
+        Parametry
         -------
-        fl1 : [list]  : wpółrzedne geodezyjne punktu początkowego [rad]
-        fl2 : [list]  : wpółrzedne geodezyjne punktu końcowego [rad]
-        a   : [float] : dłuższa półoś elipsoidy [m]
-        e2  : [float] : mimośrod elipsoidy [niemianowana]
+        fl1 [list]  : wpółrzedne geodezyjne punktu początkowego [rad]
+        fl2 [list]  : wpółrzedne geodezyjne punktu końcowego [rad]
+        a   [float] : dłuższa półoś elipsoidy [m]
+        e2  [float] : mimośród elipsoidy
           
-        Returns
+        Wyniki
         -------
-        sPK : [float] : odległość na elipsoidzie (z vincenta) [m]
-        Apk : [float] : azymut PK [rad]
-        Akp : [float] : azymut KP [rad]
+        sPK [float] : odległość na elipsoidzie [m]
+        Apk [float] : azymut PK [rad]
+        Akp [float] : azymut KP [rad]
         
         """  
         b = self.a*m.sqrt(1 - self.ecc)
@@ -474,19 +473,20 @@ class Transformacje:
       
     def R_M_N(self, fi):
         """   
-        Funkcja przelicza kąty w radianach na stopnie
+        Funkcja oblicza promienie krzywizny południka, w pierwszym wertykale 
+        i średni promień krzywizny.
         
-        Parameters
+        Parametry
         -------
-        fi : [float] : szerokość geodezyjna [rad]
-        a  : [float] : dłuższa półoś elipsoidy [m]
-        e2 : [float] : mimośrod elipsoidy [niemianowana]
+        fi [float] : szerokość geodezyjna [rad]
+        a  [float] : dłuższa półoś elipsoidy [m]
+        e2 [float] : mimośród elipsoidy
        
-        Returns
+        Wyniki
         -------
-        R  : [float] : promień krzywizny południka  [m]
-        N  : [float] : promień krzywizny w pierwszym wertykale [m]
-        M  : [float] : średni promień krzywizny [m]
+        R  [float] : promień krzywizny południka  [m]
+        N  [float] : promień krzywizny w pierwszym wertykale [m]
+        M  [float] : średni promień krzywizny [m]
         
         """     
         N = self.a/m.sqrt(1 - self.ecc * m.sin(fi)**2)
@@ -499,13 +499,13 @@ class Transformacje:
         """   
         Funkcja przelicza kąty w radianach na stopnie
         
-        Parameters
+        Parametry
         -------
-        rad : [float] : kąt w radianach [rad]
+        rad [float] : kąt w radianach [rad]
        
-        Returns
+        Wyniki
         -------
-        dms : [list] : kąt w stopniach, minutach i sekundach [d, m, s]
+        dms [list] : kąt w stopniach, minutach i sekundach [d, m, s]
         
         """     
         dd = np.rad2deg(rad)
